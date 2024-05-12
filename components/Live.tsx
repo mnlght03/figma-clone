@@ -18,7 +18,11 @@ const REACTION_EXPIRE_TIME = 4000;
 
 const REACTION_PURGE_INTERVAL = 1000;
 
-const Live = () => {
+type Props = {
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+};
+
+const Live = ({ canvasRef }: Props) => {
   const others = useOthers();
 
   const [{ cursor }, updateMyPresence] = useMyPresence() as any;
@@ -167,13 +171,14 @@ const Live = () => {
 
   return (
     <div
+      id='canvas'
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerUp={handlePointerUp}
       onPointerDown={handlePointerDown}
       className='flex h-screen w-full items-center justify-center border-2 border-green-500 text-center'
     >
-      <h1 className='text-2xl text-white'>LiveBlocks</h1>
+      <canvas ref={canvasRef} />
 
       {reactions.map((reaction) => (
         <FlyingReaction
