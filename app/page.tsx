@@ -10,6 +10,8 @@ import {
   handleCanvasMouseMove,
   handleCanvasMouseUp,
   handleCanvasObjectModified,
+  handleCanvasObjectScaling,
+  handleCanvasSelectionCreated,
   handleResize,
   initializeFabric,
   renderCanvas,
@@ -18,7 +20,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 import { fabric } from 'fabric';
-import { ActiveElement } from '@/types/type';
+import { ActiveElement, Attributes } from '@/types/type';
 import { useMutation, useRedo, useStorage, useUndo } from '@/liveblocks.config';
 import { defaultNavElement } from '@/constants';
 import { handleDelete, handleKeyDown } from '@/lib/key-events';
@@ -44,6 +46,18 @@ export default function Page() {
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const canvasObjects = useStorage((root) => root.canvasObjects);
+
+  const [elementAttributes, setElementAttributes] = useState<Attributes>({
+    width: '',
+    height: '',
+    fontSize: '',
+    fontFamily: '',
+    fontWeight: '',
+    fill: '#aabbcc',
+    stroke: '#aabbcc',
+  });
+
+  const isEditingRef = useRef<boolean>(false);
 
   const syncShapeInStorage = useMutation(({ storage }, object) => {
     if (!object) {
@@ -162,6 +176,21 @@ export default function Page() {
       });
     });
 
+    canvas.on('selection:created', (options) => {
+      handleCanvasSelectionCreated({
+        options,
+        isEditingRef,
+        setElementAttributes,
+      });
+    });
+
+    canvas.on('object:scaling', (options) => {
+      handleCanvasObjectScaling({
+        options,
+        setElementAttributes,
+      });
+    });
+
     const handleResizeEvent = () => {
       handleResize({ canvas: fabricRef.current });
     };
@@ -223,7 +252,14 @@ export default function Page() {
 
         <Live canvasRef={canvasRef} />
 
-        <RightSidebar />
+        <RightSidebar
+          elementAttributes={elementAttributes}
+          setElementAttributes={setElementAttributes}
+          fabricRef={fabricRef}
+          isEditingRef={isEditingRef}
+          activeObjectRef={activeObjectRef}
+          syncShapeInStorage={syncShapeInStorage}
+        />
       </section>
     </main>
   );
