@@ -47,6 +47,12 @@ export default function Page() {
 
   const canvasObjects = useStorage((root) => root.canvasObjects);
 
+  const [activeElement, setActiveElement] = useState<ActiveElement>({
+    name: '',
+    value: '',
+    icon: '',
+  });
+
   const [elementAttributes, setElementAttributes] = useState<Attributes>({
     width: '',
     height: '',
@@ -74,12 +80,6 @@ export default function Page() {
 
     canvasObjects.set(objectId, shapeData);
   }, []);
-
-  const [activeElement, setActiveElement] = useState<ActiveElement>({
-    name: '',
-    value: '',
-    icon: '',
-  });
 
   const deleteAllShapes = useMutation(({ storage }) => {
     const canvasObjects = storage.get('canvasObjects');
@@ -126,11 +126,13 @@ export default function Page() {
 
         break;
 
+      case 'comments':
+        break;
+
       default:
+        selectedShapeRef.current = elem?.value as string;
         break;
     }
-
-    selectedShapeRef.current = elem?.value as string;
   };
 
   useEffect(() => {
@@ -217,7 +219,7 @@ export default function Page() {
 
       window.removeEventListener('keydown', handleKeyDownEvent);
     };
-  }, []);
+  }, [canvasRef]);
 
   useEffect(() => {
     renderCanvas({

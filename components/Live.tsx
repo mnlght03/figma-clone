@@ -11,6 +11,7 @@ import { CursorMode, CursorState, Reaction, ReactionEvent } from '@/types/type';
 import ReactionSelector from '@/components/reaction/ReactionButton';
 import FlyingReaction from '@/components/reaction/FlyingReaction';
 import useInterval from '@/hooks/useInterval';
+import { Comments } from '@/components/comments/Comments';
 
 const REACTION_SHOW_INTERVAL = 100;
 
@@ -176,7 +177,7 @@ const Live = ({ canvasRef }: Props) => {
       onPointerLeave={handlePointerLeave}
       onPointerUp={handlePointerUp}
       onPointerDown={handlePointerDown}
-      className='flex h-screen w-full items-center justify-center border-2 border-green-500 text-center'
+      className='relative flex h-full w-full flex-1 items-center justify-center'
     >
       <canvas ref={canvasRef} />
 
@@ -204,6 +205,8 @@ const Live = ({ canvasRef }: Props) => {
       )}
 
       <LiveCursors others={others} />
+
+      <Comments />
     </div>
   );
 };

@@ -1,12 +1,32 @@
-"use client";
+// import { useThreads } from '@/liveblocks.config';
+// import { Thread } from '@liveblocks/react-comments';
+// import React from 'react';
 
-import { useCallback, useRef } from "react";
-import { ThreadData } from "@liveblocks/client";
+// export const CommentsOverlay = () => {
+//   const { threads } = useThreads();
 
-import { ThreadMetadata, useEditThreadMetadata, useThreads, useUser } from "@/liveblocks.config";
-import { useMaxZIndex } from "@/lib/useMaxZIndex";
+//   return (
+//     <div>
+//       {threads.map((thread) => (
+//         <Thread key={thread.id} thread={thread} />
+//       ))}
+//     </div>
+//   );
+// };
+'use client';
 
-import { PinnedThread } from "./PinnedThread";
+import { useCallback, useRef } from 'react';
+import { ThreadData } from '@liveblocks/client';
+
+import {
+  ThreadMetadata,
+  useEditThreadMetadata,
+  useThreads,
+  useUser,
+} from '@/liveblocks.config';
+import { useMaxZIndex } from '@/lib/useMaxZIndex';
+
+import { PinnedThread } from './PinnedThread';
 
 type OverlayThreadProps = {
   thread: ThreadData<ThreadMetadata>;
@@ -30,7 +50,11 @@ export const CommentsOverlay = () => {
       {threads
         .filter((thread) => !thread.metadata.resolved)
         .map((thread) => (
-          <OverlayThread key={thread.id} thread={thread} maxZIndex={maxZIndex} />
+          <OverlayThread
+            key={thread.id}
+            thread={thread}
+            maxZIndex={maxZIndex}
+          />
         ))}
     </div>
   );
@@ -50,8 +74,9 @@ const OverlayThread = ({ thread, maxZIndex }: OverlayThreadProps) => {
    *
    * useUser: https://liveblocks.io/docs/api-reference/liveblocks-react#useUser
    */
-  const { isLoading } = useUser(thread.comments[0].userId);
+  // const { isLoading } = useUser(thread.comments[0].userId);
 
+  console.log(useUser(thread.comments[0].userId));
   // We're using a ref to get the thread element to position it
   const threadRef = useRef<HTMLDivElement>(null);
 
@@ -70,15 +95,15 @@ const OverlayThread = ({ thread, maxZIndex }: OverlayThreadProps) => {
     });
   }, [thread, editThreadMetadata, maxZIndex]);
 
-  if (isLoading) {
-    return null;
-  }
+  // if (isLoading) {
+  // return null;
+  // }
 
   return (
     <div
       ref={threadRef}
       id={`thread-${thread.id}`}
-      className="absolute left-0 top-0 flex gap-5"
+      className='absolute left-0 top-0 flex gap-5'
       style={{
         transform: `translate(${thread.metadata.x}px, ${thread.metadata.y}px)`,
       }}
