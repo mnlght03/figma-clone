@@ -12,6 +12,7 @@ import {
   handleCanvasObjectModified,
   handleCanvasObjectScaling,
   handleCanvasSelectionCreated,
+  handlePathCreated,
   handleResize,
   initializeFabric,
   renderCanvas,
@@ -186,6 +187,13 @@ export default function Page() {
       });
     });
 
+    canvas.on('path:created', (options) => {
+      handlePathCreated({
+        options,
+        syncShapeInStorage,
+      });
+    });
+
     canvas.on('object:scaling', (options) => {
       handleCanvasObjectScaling({
         options,
@@ -252,7 +260,7 @@ export default function Page() {
       <section className='flex h-full'>
         <LeftSidebar allShapes={Array.from(canvasObjects)} />
 
-        <Live canvasRef={canvasRef} />
+        <Live canvasRef={canvasRef} undo={undo} redo={redo} />
 
         <RightSidebar
           elementAttributes={elementAttributes}
