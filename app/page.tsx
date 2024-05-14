@@ -52,18 +52,16 @@ export default function Page() {
       });
     });
 
-    window.addEventListener('resize', () => {
+    const handleResizeEvent = () => {
       handleResize({ canvas: fabricRef.current });
-    });
+    };
+
+    window.addEventListener('resize', handleResizeEvent);
 
     return () => {
       canvas.dispose();
 
-      window.removeEventListener('reise', () =>
-        handleResize({
-          canvas: null,
-        })
-      );
+      window.removeEventListener('resize', handleResizeEvent);
     };
   }, []);
 
